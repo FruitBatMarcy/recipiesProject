@@ -1,0 +1,69 @@
+DROP TABLE IF EXISTS ingredient;
+DROP TABLE IF EXISTS step;
+DROP TABLE IF EXISTS recipe_catagory;
+DROP TABLE IF EXISTS unit;
+DROP TABLE IF EXISTS category;
+DROP TABLE IF EXISTS recipe;
+
+CREATE TABLE recipe (
+	recipe_id INT AUTO_INCREMENT NOT NULL,
+	recipe_name VARCHAR(128) NOT NULL,
+	notes TEXT,
+	num_servings INT,
+	prep_time TIME,
+	cook_time TIME,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	primary key (recipe_id)
+);
+
+CREATE TABLE category (
+	category_id INT AUTO_INCREMENT NOT NULL,
+	category_name VARCHAR(64) NOT null,
+	primary key (category_id)
+);
+
+CREATE TABLE unit (
+	unit_id INT AUTO_INCREMENT NOT NULL,
+	unit_name_singular VARCHAR(32) NOT NULL,
+	unit_name_plural VARCHAR(34) NOT null,
+	primary key (unit_id)
+);
+
+CREATE TABLE recipe_category (
+	recipe_id INT NOT NULL,
+	category_id INT NOT null,
+	foreign key (recipe_id)
+	references recipe (recipe_id)
+	on delete cascade,
+	foreign key (category_id)
+	references category (category_id)
+	on delete cascade,
+	unique key (recipe_id,category_id)
+);
+
+CREATE TABLE step (
+	step_id INT AUTO_INCREMENT NOT NULL,
+	recipe_id INT NOT NULL,
+	step_order INT NOT NULL,
+	step_text TEXT NOT null,
+	primary key (step_id),
+	foreign key(recipe_id)
+	references recipe (recipe_id)
+	on delete cascade
+);
+
+CREATE TABLE ingredient (
+	ingredient_id INT AUTO_INCREMENT NOT NULL,
+	recipe_id INT NOT NULL,
+	unit_id INT NOT NULL,
+	ingredient_name VARCHAR(64) NOT NULL,
+	instruction VARCHAR(64),
+	ingredient_order INT not null,
+	amount DECIMAL(7,2),
+	primary key (ingredient_id),
+	foreign key (recipe_id)
+	references recipe (recipe_id)
+	on delete cascade,
+	foreign key (unit_id)
+	references unit (unit_id)
+);
